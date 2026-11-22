@@ -18,10 +18,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Android SDK paketlerini kur
-        run: |
-          yes | sdkmanager --licenses > /dev/null || true
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+      - name: Android SDK kur
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-34 build-tools;34.0.0'
 
       - name: Gradle kur (sabit sürüm)
         uses: gradle/actions/setup-gradle@v3
