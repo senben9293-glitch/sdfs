@@ -1,0 +1,38 @@
+name: APK Derle
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodu çek
+        uses: actions/checkout@v4
+
+      - name: Java kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Android SDK paketlerini kur
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Gradle kur (sabit sürüm)
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.4'
+
+      - name: Debug APK oluştur
+        run: gradle assembleDebug --no-daemon
+
+      - name: APK'yı yükle (indirilebilir çıktı)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ParentalGuard-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
